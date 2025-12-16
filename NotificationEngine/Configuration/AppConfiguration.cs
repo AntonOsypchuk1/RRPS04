@@ -7,10 +7,22 @@ public sealed class AppConfiguration
 
     public static AppConfiguration Instance => _instance.Value;
 
-    public string Provider { get; }
+    public string Provider { get; private set; } = "twilio";
 
-    private AppConfiguration()
+    private AppConfiguration() { }
+
+    public void SetProvider(string? provider)
     {
-        Provider = "Twilio"; // умовно, потім env / file
+        if (string.IsNullOrWhiteSpace(provider))
+            return;
+
+        provider = provider.Trim().ToLowerInvariant();
+
+        Provider = provider switch
+        {
+            "twilio" => "twilio",
+            "sendgrid" => "sendgrid",
+            _ => throw new InvalidOperationException("Unknown provider (use twilio/sendgrid).")
+        };
     }
 }

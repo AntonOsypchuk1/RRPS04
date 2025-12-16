@@ -1,19 +1,16 @@
 using NotificationEngine.Configuration;
-using NotificationEngine.Factories;
 
-namespace NotificationEngine;
+namespace NotificationEngine.Factories;
 
 public static class ProviderFactorySelector
 {
     public static IProviderFactory Select()
     {
-        var provider = AppConfiguration.Instance.Provider;
-
-        return provider switch
+        return AppConfiguration.Instance.Provider switch
         {
             "twilio" => new TwilioFactory(),
             "sendgrid" => new SendGridFactory(),
-            _ => throw new InvalidOperationException("Unknown provider")
+            _ => throw new InvalidOperationException("Provider factory not configured.")
         };
     }
 }

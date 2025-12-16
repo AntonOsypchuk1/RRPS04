@@ -1,4 +1,4 @@
-namespace NotificationEngine.Providers;
+namespace NotificationEngine.Providers.Interfaces;
 
 public interface ISender
 {

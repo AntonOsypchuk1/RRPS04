@@ -1,4 +1,6 @@
-namespace NotificationEngine.Providers;
+using NotificationEngine.Providers.Interfaces;
+
+namespace NotificationEngine.Factories;
 
 public interface IProviderFactory
 {

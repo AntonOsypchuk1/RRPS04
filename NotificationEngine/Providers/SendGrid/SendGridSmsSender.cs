@@ -1,9 +1,8 @@
+using NotificationEngine.Providers.Interfaces;
+
 namespace NotificationEngine.Providers.SendGrid;
 
-public class SendGridSmsSender : ISmsSender
+public sealed class SendGridSmsSender : ISmsSender
 {
-    public void Send(string message)
-    {
-        Console.WriteLine($"[SendGrid SMS] {message}");
-    }
+    public void Send(string message) => Console.WriteLine($"[SendGrid SMS] {message}");
 }

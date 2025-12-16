@@ -1,6 +1,8 @@
-namespace NotificationEngine;
+using NotificationEngine.Templates;
+
+namespace NotificationEngine.Notifications;
 
 public interface INotification
 {
-    void BuildMessage(string message);
+    string BuildMessage(MessageTemplate template);
 }

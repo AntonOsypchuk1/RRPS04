@@ -1,24 +1,52 @@
-﻿using NotificationEngine.Factories;
-using NotificationEngine.Notifications;
+﻿using NotificationEngine.Configuration;
+using NotificationEngine.Factories;
+using NotificationEngine.Providers.Interfaces;
+using NotificationEngine.Services;
+using NotificationEngine.Templates;
 
 namespace NotificationEngine;
 
-class Program
+internal static class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Choose notification type (email / sms):");
-        var type = Console.ReadLine();
+        Console.WriteLine("Provider (twilio / sendgrid):");
+        var providerInput = Console.ReadLine()?.Trim().ToLowerInvariant();
 
-        Console.WriteLine("Enter message:");
-        var message = Console.ReadLine();
+        Console.WriteLine("Notification type (email / sms):");
+        var typeInput = Console.ReadLine()?.Trim().ToLowerInvariant();
 
-        var notification = NotificationFactory.Create(type);
+        Console.WriteLine("Message body:");
+        var body = Console.ReadLine() ?? string.Empty;
+        
+        try
+        {
+            // Config (Singleton)
+            AppConfiguration.Instance.SetProvider(providerInput);
 
-        var providerFactory = ProviderFactorySelector.Select();
-        var sender = providerFactory.CreateEmailSender();
+            // Prototype (clone base template + customize)
+            var templateKey = typeInput == "sms" ? "default_sms" : "default_email";
+            var template = TemplateRegistry.Get(templateKey);
+            template.Body = body;
 
-        var service = new NotificationService();
-        service.Send(notification, sender);
+            // Factory Method (create notification)
+            var notification = NotificationFactory.Create(typeInput);
+
+            // Abstract Factory (select provider family + create sender)
+            var providerFactory = ProviderFactorySelector.Select();
+            ISender sender = typeInput == "sms"
+                ? providerFactory.CreateSmsSender()
+                : providerFactory.CreateEmailSender();
+
+            // Orchestration
+            var service = new NotificationService();
+            service.Send(notification, sender, template);
+
+            Console.WriteLine("Done.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
     }
 }
