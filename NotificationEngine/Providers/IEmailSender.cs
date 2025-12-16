@@ -1,6 +1,3 @@
 namespace NotificationEngine.Providers;
 
-public interface IEmailSender
-{
-    
-}
+public interface IEmailSender : ISender { }

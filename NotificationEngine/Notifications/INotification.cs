@@ -2,5 +2,5 @@ namespace NotificationEngine;
 
 public interface INotification
 {
-    void Send(string message);
+    void BuildMessage(string message);
 }

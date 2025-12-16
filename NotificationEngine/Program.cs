@@ -1,4 +1,7 @@
-﻿namespace NotificationEngine;
+﻿using NotificationEngine.Factories;
+using NotificationEngine.Notifications;
+
+namespace NotificationEngine;
 
 class Program
 {
@@ -10,14 +13,12 @@ class Program
         Console.WriteLine("Enter message:");
         var message = Console.ReadLine();
 
-        try
-        {
-            var notification = NotificationFactory.Create(type);
-            notification.Send(message);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+        var notification = NotificationFactory.Create(type);
+
+        var providerFactory = ProviderFactorySelector.Select();
+        var sender = providerFactory.CreateEmailSender();
+
+        var service = new NotificationService();
+        service.Send(notification, sender);
     }
 }
